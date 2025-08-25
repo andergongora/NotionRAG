@@ -6,8 +6,8 @@ import dotenv
 dotenv.load_dotenv()
 
 class Chatbot:
-    def __init__(self, model_name: str = "gemini-1.5-flash"):
-        self.llm = ChatGoogleGenerativeAI(model=model_name, google_api_key=os.getenv("GOOGLE_API_KEY"))
+    def __init__(self, google_api_key: str, model_name: str = "gemini-1.5-flash"):
+        self.llm = ChatGoogleGenerativeAI(model=model_name, google_api_key=google_api_key)
         self.template = """Eres un asistente de inteligencia artificial útil. Usa los siguientes fragmentos de contexto para responder la pregunta al final.
 Si no sabes la respuesta, simplemente di que no la sabes. No inventes una respuesta.
 
