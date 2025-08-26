@@ -1,6 +1,5 @@
-import io
 import streamlit as st
-from utils.utils import download_chroma_data, process_notion_data, update_data, set_api
+from utils.utils import download_chroma_data, load_chroma_zip, process_notion_data, update_data, set_api
 
 
 def Streamlit_App(app_class):
@@ -18,8 +17,16 @@ def Streamlit_App(app_class):
         st.text_input("Gemini API Key", key="gemini_api_key", type="password", on_change=lambda: set_api())
         st.caption("The API is FREE!")
         st.link_button("Get Gemini API","https://aistudio.google.com/u/1/apikey")
+        st.markdown("---")
         st.title("Notion")
         st.file_uploader("Insert Notion zip", type=".zip", key="notion_zip", on_change=lambda: update_data())
+        with st.expander("How to download"):
+            st.write("To download, select your main page, click the top right three dots and click _export_.")
+            st.write("Use this configuration:")
+            st.image("./img/export_notion.png")
+        st.markdown("---")
+        st.subheader("Chroma DB (persisted embeddings)")
+        st.file_uploader("Upload chroma_db.zip to restore embeddings", type=["zip"], key="chroma_zip", on_change=load_chroma_zip)
         if st.session_state['download_chroma']:
             st.download_button(
                 label="Download ZIP",
@@ -28,12 +35,9 @@ def Streamlit_App(app_class):
                 mime="application/zip",
                 icon=":material/download:",
             )
-
-        with st.expander("How to download"):
-            st.write("To download, select your main page, click the top right three dots and click _export_.")
-            st.write("Use this configuration:")
-            st.image("./img/export_notion.png")
-        st.button("Load data", on_click=lambda: process_notion_data(st.session_state["app"]))
+        st.markdown("---")
+        st.button("Load data (build or load embeddings)", on_click=lambda: process_notion_data(st.session_state["app"]))
+        st.markdown("---")
     st.title("💬 Notion Chatbot")
     st.caption("🚀 Created by Ander Góngora ☺️")
     for msg in st.session_state.messages:
