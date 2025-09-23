@@ -123,7 +123,7 @@ A visual example is shown in `app/streamlit_app.py` under the "How to download" 
 
 ## License
 
-This project is provided for educational purposes. Adjust the license as needed.
+The license of this project is MIT (see LICENSE file).
 
 ---
 
@@ -251,4 +251,4 @@ El archivo `main.py` inicializa la app Streamlit programáticamente, pero el flu
 
 ## Licencia
 
-Este proyecto se distribuye con fines educativos. Ajusta la licencia según tus necesidades.
+La licencia de este proyecto es MIT (ver LICENSE).
