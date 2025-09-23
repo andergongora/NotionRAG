@@ -54,10 +54,43 @@ def process_notion_data(app):
         return
 
     try:
-        st.toast("Building / loading embeddings. This may take a while...", icon="🔃")
-        app.load_data()
-        st.session_state['download_chroma'] = True
-        st.toast("Embeddings ready.", icon="✅")
+        # Create three columns to center the content
+        col1, col2, col3 = st.columns([1, 2, 1])
+
+        with col2:
+            # Add some vertical spacing
+            st.markdown("<br>" * 2, unsafe_allow_html=True)
+
+            # Custom CSS for larger text and centered content
+            st.markdown("""
+                <style>
+                    .big-text {
+                        font-size: 20px;
+                        text-align: center;
+                        padding: 20px;
+                        background-color: #f0f2f6;
+                        border-radius: 10px;
+                        margin: 20px 0;
+                    }
+                </style>
+            """, unsafe_allow_html=True)
+
+            # Create a placeholder for the processing message
+            message_placeholder = st.empty()
+            
+            # Display the message in the placeholder
+            message_placeholder.markdown("""<div class="big-text">🔄 Processing documents and building embeddings...</br></br>
+This may take several minutes on first load.</br></br>
+💡 <strong>Tip:</strong> Download the chroma_db.zip after processing for faster loading next time!</div>""", unsafe_allow_html=True)
+
+            # Process the data
+            with st.spinner(""):
+                app.load_data()
+                st.session_state['download_chroma'] = True
+
+            # Clear the message after processing
+            message_placeholder.empty()
+            st.toast("Embeddings ready!", icon="✅")
     except ValueError as e:
         st.error(f"Error processing documents: {str(e)}")
         st.toast("Failed to process data.", icon="❌")
@@ -106,19 +139,6 @@ def load_chroma_zip():
         # Extract the uploaded ZIP
         with zipfile.ZipFile(io.BytesIO(uploaded.getvalue())) as z:
             z.extractall(path=persist_dir)
-
-        # Fix permissions on extracted files
-        for root, dirs, files in os.walk(persist_dir):
-            for d in dirs:
-                try:
-                    os.chmod(os.path.join(root, d), 0o755)  # drwxr-xr-x
-                except Exception:
-                    pass
-            for f in files:
-                try:
-                    os.chmod(os.path.join(root, f), 0o666)  # rw-rw-rw-
-                except Exception:
-                    pass
 
         # Verify the extracted content is a valid Chroma DB
         required_files = ["chroma.sqlite3", "chroma-collections.parquet", "chroma-embeddings.parquet"]

@@ -42,21 +42,8 @@ def EmbeddingNotion(files: dict = None, persist_directory: str = "chroma_db", de
     if files and os.path.exists(persist_directory):
         safe_remove_directory(persist_directory)
 
-    # Ensure the directory exists and is writable
+    # Ensure the directory exists
     os.makedirs(persist_directory, exist_ok=True)
-
-    # Try to fix permissions on the directory and its contents
-    fix_permissions(persist_directory)
-
-    # Double check if directory is writable after fixing permissions
-    if not os.access(persist_directory, os.W_OK):
-        # If still not writable, try temp directory
-        import tempfile
-        old_directory = persist_directory
-        persist_directory = tempfile.mkdtemp()
-        print(f"Warning: {old_directory} is not writable. Using temporary directory: {persist_directory}")
-        # Also ensure temp directory has correct permissions
-        fix_permissions(persist_directory)
 
     embeddings = HuggingFaceEmbeddings(
         model_name="HIT-TMG/KaLM-embedding-multilingual-mini-v1",
