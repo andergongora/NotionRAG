@@ -1,5 +1,4 @@
 from chatbot.core import MainApp
-from chatbot.embeddings import EmbeddingNotion, RetrieverNotion
 from app.streamlit_app import Streamlit_App
 
 def main():
